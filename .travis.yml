@@ -1,0 +1,28 @@
+language: java
+jdk: openjdk8
+services:
+- docker
+branches:
+  except:
+  - "/^[0-9]/"
+before_script:
+- git config --global user.name "${GIT_USER_NAME}"
+- git config --global user.email "${GIT_USER_EMAIL}"
+- cp .travis.settings.xml $HOME/.m2/settings.xml
+stages:
+- name: devbuild
+  if: branch != master
+- name: masterdeploy
+  if: branch = master
+
+jobs:
+  include:
+  - stage: devbuild
+    name: Development Build
+    script: mvn clean install jib:dockerBuild -Drevision=${TRAVIS_BUILD_NUMBER}.$(git
+      rev-parse --short HEAD)
+  - stage: masterdeploy
+    name: build master, site and deploy
+    script: 
+     - mvn clean install jib:dockerBuild scm:tag deploy site -Drevision=${TRAVIS_BUILD_NUMBER}.$(git rev-parse --short HEAD) -Dusername="${GIT_USER_NAME}" -Dpassword="${GITPW}"
+     - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin && docker images && docker push npiper/test-api
