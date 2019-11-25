@@ -21,6 +21,27 @@
     <githubOrg>npiper</githubOrg>
   </properties>
 
+	<build>
+		<plugins>
+
+
+			<!-- Jib Plugin - simpler Docker -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>1.8.0</version>
+				<configuration>
+					<to>
+						<image>${githubOrg}/${project.artifactId}</image>
+					</to>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+
  	<!-- REPOSITORIES & PLUGIN REPOSITORIES -->
 	<repositories>
 		<!-- public release repo -->
