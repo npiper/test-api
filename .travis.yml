@@ -14,7 +14,6 @@ stages:
   if: branch != master
 - name: masterdeploy
   if: branch = master
-
 jobs:
   include:
   - stage: devbuild
@@ -23,6 +22,16 @@ jobs:
       rev-parse --short HEAD)
   - stage: masterdeploy
     name: build master, site and deploy
-    script: 
-     - mvn clean install jib:dockerBuild scm:tag deploy site -Drevision=${TRAVIS_BUILD_NUMBER}.$(git rev-parse --short HEAD) -Dusername="${GIT_USER_NAME}" -Dpassword="${GITPW}"
-     - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin && docker images && docker push npiper/test-api
+    script:
+    - mvn clean install jib:dockerBuild scm:tag deploy site -Drevision=${TRAVIS_BUILD_NUMBER}.$(git
+      rev-parse --short HEAD) -Dusername="${GIT_USER_NAME}" -Dpassword="${GITPW}"
+    - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+      && docker images && docker push npiper/test-api
+env:
+  global:
+  - secure: hnmLAUHpUhUjnm//rDlREXtjYAw5JrjE2ip+Emf+VGCjU0a/v9l6SrkqNCUqSAdEkDvyPZxYRj/Qrjm/2Sf5RlQq5LTIGxrYW34Xa6cOCiMVfHhnbTJ3CugbgQhiE0deE1GxjWgjBrfCPafIdSQrdXgaozoXyun8NCTJCFNKiT0wMPFhzV5mDHwdHf8U6SufDfrQDIyDZGlcS5Or240qEOyObgnU7oCoJpKTic3WHzOK2RpkaveQPGN86U4oKrf5SKcQQPiYYU0BL3sX/zb4qjs32hFyy6QnIEg2URA9OlDRZZvrGV4e8bj7llpLajjeO4KLglOFguHOn0fiTDPhzOuxMhhfQ6tzLbx5YzcEy118c1T1RFx9oRg5BKhUK8Joi/rcDsMJzI6zUYOPhpLynX+XW/5mWjz6545iztZYwaktM3L2SaDALBhaZg6BsdDLuTf5Mrro0+h5C5T8Jvm1DDDspjQMVavUXAj6tIh+UQ9K+labi5KmwbpJL9yKGkNXV80rDP7Dpr6VQGeC+mUylvKOQK2Gy7rZl01+Bnknd9Ws5ulCR90OVHWJnss/fg7CS/15n1VCnWPpg6ZQaJ9OcZS5lzAGlHWtfu4QNXTk5GK71EGqSdqglMduAj+fIwWU9Yi7raGQgeI/byGrE46TWUvrXxx5OpQ8BYJvp0SAIOw=
+  - secure: FvXPZ8TBTbKGb/eRy/z9zLg9ES3m3AekQ6Bk16liXypwvMqJbtxyUy0HA/2Wm286DoeQHjlogGGjBkmnEAjIP/tINUfbDS4gdLiuzIzbonoaUjSCYcFMrPAsn+wY9NMNkrRSb0HAKgDgxL+fBL7H/nCVeQB5YHP/++X7rRzZbZPYY+UDhRzAk6qE515plZMm7phFfTpiMbHcPglnrUmlX1iO658dgkIV6BynX2ADHMhK6ueDAlELFOEUdSlZuchZrozdzzWUJo1lxYekxQRngUkJcc0ancS/Peu7zF1mOr6T2dzJIq8tsc3N9aohm0/2WXKBPqsaH9CWKphRHLeVV03D8BLg9z7v8k4kLYkoxafJ9Aq7f/wcjd70mztxkl9sWXx5o+K+msWU6VeY55roybaXW7cDlOqJ8nbbfqJxNYuvFeKl81QYLdeyiJHO/Qe0LPmK7REwCR96WBK1tlLMs216Jihm2rc8UZuVJM/L/4UEETib0npvL7EWLo48tQD0JVi5u+FmbH6gZsTeoIrbHnaEEA6jUi3vqdRu647aBhB7zN2ZpFMrk0pStDUXReK4aGac+AeGDfwswPddbrWPQ4ZpJBWRckfJngsNgvEjXFISqYfQHgHNyjRAFcThLQ0RjqWjvaOFpmra/PXTSRJi7yF6p0FWRcm/OsESURQ/NuA=
+  - secure: i0dleB4A0euSnT2Jvot5zhQsCP6x5S90ter5PvZCmn6RT9Z5ppwkfYrLaQwtN2yg8enpf3RYh4/373tYuAJFXTm0SALpjCUGbCi/owhWzKEINZOLSm2t42CxdA0BnhVWGRGCKy/r1ppO4LOqLHIDE01jjxgKmOeCgYVAuTECH0btuuhWG+YLY5AotYzvZHKRmVmP+RLdRyS+MvyWDvSxfXQs3F4JUi7xgP6Q694EnnRIA7/0eP/KrCBnsaqxecb/FDoIaby7G4uRlBn/O+ihZe9TW+Tw1+AH4vhpWkUhjPXYF6dce4mInDQyMaK7XXYyLum2sDtZ5egp1QbOsTFu3m0Zi5B10Dpk2HWGXyZTZBkU8In5aHAhQamjkmU8Y+qfY83yNrwkoHh8tZtYbC6rERKYzDUYv8NbAppB6kmO4lHluWTv5Azk/qqO+5kzft171+7cBO1d5YYLDjsEKqV723rketKfjlbDeB2JlD+4hhx63zIzhOq+35r6Cp4pYyIfMC0Whol45P/GgRGW5DevNufJ2DbbW/lxBZgHxt+2hYjvZRuE42JY9CQupkKSxeQYuE/9Fdodr3SaT5ryDS9A2dhyW/PsTVWyL2NV9EqzteE/BkkZuBa9gcy1ueAsAdTq0zL6RRpiJEg6rmVJE+EoPilpPE/iTapTs8MjiEtmyuU=
+  - secure: aTj1OMY8BcKf0Bd2VMw3e6+KT5K0MopBf8PEhyy7q+nAVXhsOtQhgVAUaDBgXQMpiZOyD2tMv8RJgkbABtoPG4yEYuZPZRMVNFkZpUG+n5y7L4YY2eUO6pNhLg1xqdCzG59fc6U6CoTIQ3yLhpWEcGqBAh/qsQ0pdqwx96pbC1rYhtm0q8HFOsnEQxuADAbPBU/j+0ID+pDU8ISeD0v1kwJpdOymBNSrhy0Uj8p3PLDnJYGPvPadyd3yZdJhG02sHUJKYA3jRj47i+dHvGm9wl/2BAmObGac0V4omOWWohr/c97dHizl7oI9kmLXoYNKopPPs3dFv26xx+ELNLHOdCx9oRuBKk8NQZ5+XXIt9MRmni5lGWaZNMrhXq1eDwEADasTrEdiD4sOxvng1ZjZQHp7SWY7regYJEgnB8utOX3k/YhFuYId+jzsbW0HwEnugT7VsIgsn/8M7RWas40LyczdsYTDeKYYcpv/Rog26QWtCe39rEdnzcLWJHrYGR8vyPTrl+QYXnBAWgHfcjzGhkEQ2mzFTU+1XQxWlwYdLgMM8iy59FCgiIdG2k+LLddz0KZ19h9fzyomXBhEwwjDZ9ygsQ3M/rKbe6Y3IRUGNrQVu0VPgtIBO4Sbi1438U/O/eLviSIBQ/tjvLNnfGSEK/s+GaERhIkGpx2O67R2IpA=
+  - secure: ljPoznhPtuizvrm20gk6vDU2gqKRtlPNr5aC5uTf7h6dvgw7aD39zCOFyPJ+g4ybG0yGNZyyd8RFhXOBMnKOeBJ7M/18RUVQzISBwACPmM2mKvPNtMtBzgSvXGD+3qhTVxQXejX/iFpekaBhNzdWyVCgYD5dzGYvKmG3VIQeZY6MBqphSc11rEMWP7UzpdMofIssN87xRcYogsLawP82XDi4kvsDsfsP+eHfUSqtDsXwlsl6ZFMXTBGV6xiSp9lg9tSJvuDkxn9aj47H5mDA7XTKY4gJSIaQY8eWCS8bJP+54NGpVQvtr8I8hfhgzb7CHO34s5K1YxdSeepIdcHBZJU3pi1TqOmcFKr+nRTr0MoJDKxzwqbOTG7CEafGtdACnG7ErG485qBmUKimuu2jT9Q5i5tr4OCG+votFNzjg621IOGfejjTAbeDUKjf5U1x+JP+NWkdRJtPJLXAfzIccCao5WL6va54R+JhPWrszX4OSzuN8ID1TaEGqqryA0xO5Xu2zv0pvD3dyVK5fnXi11t/hQbOAxZh82AqSKlegDQ2SiNmaWpkfdSFSDh48D6UpwSN3bizv3GKkki6wUljqm00vngSkry14uu+WUdNl9z0H6nX1K+BFV9Bz1w3XPIzpIXObCzZT2/670f0BdA9s10Q+NeVIaSDGvF/DQhheDQ=
+  - secure: kkj8QiS2ioRYgOhGEthoOihpLOZ9QamLhNZtrHd4QLofMcX7SXm8WVnEoj6veUDmCN1Plmkf3qghpZ4UBPG5y7EasVYQ/KGrp9outpy26zvB5dvBfybFdWjnbngWTYWpKVIY+c1v0I3xX1SWWkrHX4feBYaXpbo8NEyei2CpL4JcZYGgNfsPOkLsB0n2/WAQTIEcHalgyxvPjw4F8PQGNP476EywEuAUMnIJNj5ohrcfyBEzNS//RFe71ki1F59EJ5tqE+I3zkFgsP0BFc5UnYYAGeb3dt1C/k2aTXgCZnD5ohhRAvFoWwIuAujIYLel/ZIXZaU9JabpU33rph4i2ls/2pr5ZZUwYRT9YVGuNsGhaJFotUuAnPjifxiHaVrlADImtgkq56xMVpUemyN+eyCG/pxwDF52a/13gih6islKMRD6wdivWcLGvYRG2z/S9WdlDWISloN0Ax2p0qFF8vuo/fmuyHOdRzGIrHc9BL6GMp/rK9HT6IHbmPgvm354PFYEuGpSVX97enDP4MHnowRaf2JI7se+duPvESpLeT+cnu6NfwQu7ObwEibX0/D8Ql5Gps8ytV04RheHICnTm1KhBfNUwG4NE7zp6XmHFjj4JX94Vs43K0B+kd1Bb+GUz1Go6rJh6wQIKHczwCOEoOXsxbva07RE2o/RcaS3jxc=
